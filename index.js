@@ -7,17 +7,32 @@ const port = 3000;
 
 const app = express();
 
-// Enable CORS for all routes
-app.use(cors({ origin: "http://localhost:3000" }));
+// Configure CORS to allow multiple origins
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://tv.starnode.host",
+    "https://bunmbiesasvgsaf.netlify.app"
+];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    }
+}));
 
 app.get('/', (req, res) => {
     res.status(200).json({
-        intro: "Welcome to the unofficial vidsrcPro provider",
+        intro: "Welcome to the ReelBox Api",
         routes: {
             movie: "/vidsrc/:movieTMDBid",
             show: "/vidsrc/:showTMDBid?s=seasonNumber&e=episodeNumber"
         },
-        author: "This API is developed and created by Inside4ndroid Studios"
+        author: "This API is developed and created by Aurion Development"
     });
 });
 
